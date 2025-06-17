@@ -1,0 +1,7 @@
+{
+  "name": "vergerApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
