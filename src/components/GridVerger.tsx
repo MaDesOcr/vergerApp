@@ -2,15 +2,31 @@ import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import './GridVerger.css';
 import React, { useEffect, useState } from 'react';
 
+
+
+interface Ligne {
+  id: string;
+  text: string;
+}
+
+interface Verger {
+  id: number;
+  ligne: Ligne[];
+}
+
+
 const GridVerger: React.FC = () => {
 
-    const [verger, setVerger] = useState<{id: number; ligne : []}>();
+    const [verger, setVerger] = useState<Verger[]>([]);
+    const data : Verger[] = [];
 
     useEffect(() => {
     fetch('/data/verger.json')
       .then((res) => res.json())
-      .then((data) => setVerger(data))
-      .then(console.log(verger));
+      .then((data: Verger[]) => {
+        setVerger(data);
+        console.log('Données chargées :', data);
+      })
   }, []);
 
 
