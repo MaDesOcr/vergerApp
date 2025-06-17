@@ -1,8 +1,19 @@
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import './GridVerger.css';
-
+import React, { useEffect, useState } from 'react';
 
 const GridVerger: React.FC = () => {
+
+    const [verger, setVerger] = useState<{id: number; ligne : []}>();
+
+    useEffect(() => {
+    fetch('/data/verger.json')
+      .then((res) => res.json())
+      .then((data) => setVerger(data))
+      .then(console.log(verger));
+  }, []);
+
+
     return (
         <div className="grid-verger">
             <IonGrid>
