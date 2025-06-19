@@ -1,26 +1,20 @@
 [
     {
-        "id": 1,
-        "ligne": [
+        "lignes": [
             {
-                "id": "case1",
                 "text": "case1"
             },
             {
-                "id": "case2",
                 "text": "case2"
             }
         ]
     },
     {
-        "id": 2,
-        "ligne": [
+        "lignes": [
             {
-                "id": "case3",
                 "text": "case3"
             },
             {
-                "id": "case4",
                 "text": "case4"
             }
         ]

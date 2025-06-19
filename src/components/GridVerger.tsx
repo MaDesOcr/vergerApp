@@ -1,74 +1,56 @@
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import './GridVerger.css';
 import React, { useEffect, useState } from 'react';
+import Verger from '../pages/Verger';
 
-
-
-interface Ligne {
-  id: string;
-  text: string;
-}
 
 interface Verger {
-  id: number;
-  ligne: Ligne[];
+  lignes: {
+    emplacements: {
+      type: string;
+    }[];
+  }[];
 }
-
+ 
 
 const GridVerger: React.FC = () => {
-
-    const [verger, setVerger] = useState<Verger[]>([]);
-    const data : Verger[] = [];
+    const [verger, setVerger] = useState<Verger | null>(null);
 
     useEffect(() => {
-    fetch('/data/verger.json')
-      .then((res) => res.json())
-      .then((data: Verger[]) => {
-        setVerger(data);
-        console.log('Données chargées :', data);
-      })
-  }, []);
-
+        const loadVerger = async () => {
+            try {
+                const res = await fetch('/data/verger.json');
+                if (!res.ok) throw new Error(`Erreur HTTP : ${res.status}`);
+                const data: Verger = await res.json();
+                setVerger(data);
+                console.log(data)
+                console.log(verger)
+            } catch (err) {
+                console.error('Erreur de chargement :', err);
+            }
+        };
+        loadVerger();
+    }, []);
 
     return (
-        <div className="grid-verger">
-            <IonGrid>
-                <IonRow>
-                    <IonCol>1</IonCol>
-                    <IonCol>2</IonCol>
-                    <IonCol>3</IonCol>
-                </IonRow>
-            </IonGrid>
-
-            <IonGrid>
-                <IonRow>
-                    <IonCol>1</IonCol>
-                    <IonCol>2</IonCol>
-                    <IonCol>3</IonCol>
-                    <IonCol>4</IonCol>
-                    <IonCol>5</IonCol>
-                    <IonCol>6</IonCol>
-                </IonRow>
-            </IonGrid>
-
-            <IonGrid>
-                <IonRow>
-                    <IonCol>1</IonCol>
-                    <IonCol>2</IonCol>
-                    <IonCol>3</IonCol>
-                    <IonCol>4</IonCol>
-                    <IonCol>5</IonCol>
-                    <IonCol>6</IonCol>
-                    <IonCol>7</IonCol>
-                    <IonCol>8</IonCol>
-                    <IonCol>9</IonCol>
-                    <IonCol>10</IonCol>
-                    <IonCol>11</IonCol>
-                    <IonCol>12</IonCol>
-                </IonRow>
-            </IonGrid>
+        <div>
+            {verger ? (
+                <div className="verger-grid">
+                    {verger.lignes.map((ligne, rowIndex) => (
+                        <div key={rowIndex} className="ligne">
+                            {ligne.emplacements.map((emplacement, colIndex) => (
+                                <div key={colIndex} className="cellule">
+                                    {emplacement.type}
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p>Chargement...</p>
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default GridVerger;
