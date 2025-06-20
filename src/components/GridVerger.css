@@ -23,8 +23,21 @@
   box-sizing: border-box;
   background: #fafafa;
 }
-.maturation5{
-  background-color: green;
+
+.vert{
+  background: #d4edda;
+}
+.jaune{
+  background: #fff3cd;
+}
+.rouge{
+  background: #f8d7da;
+}
+.gris{
+  background: #e2e3e5;
+}
+.orange{
+  background: #ffeeba;
 }
 
 .modal-ajout-arbre {

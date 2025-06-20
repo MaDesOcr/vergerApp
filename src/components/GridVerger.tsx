@@ -49,6 +49,8 @@ useEffect(() => {
               return {
                 ...empl,
                 maturation: empl.maturation + 1,
+                // Si la maturation dépasse 15, on la remet à 0
+                ...(empl.maturation >= 20 && { maturation: -5 }),
               };
             }
             return empl;
@@ -121,6 +123,19 @@ useEffect(() => {
     setVerger(updatedVerger);
   };
 
+  const getMaturationClass = (maturation: number) => {
+  switch (true) {
+    case (maturation >= 1 && maturation < 10):
+      return 'orange';
+    case (maturation >= 10 && maturation < 15):
+      return 'vert';
+    case (maturation >= 15):
+      return 'rouge';
+    default:
+      return 'gris';
+  }
+};
+ 
 
   const cols = verger.lignes[0].emplacements.length;
   const sizeStr = Math.floor(12 / cols).toString();
@@ -135,7 +150,7 @@ useEffect(() => {
               <IonCol key={colIndex} size={sizeStr} sizeLg='3'
                 onClick={() => handleClickEmplacement(empl, rowIndex, colIndex)}
               >
-                <div className={`cellule-content maturation${empl.maturation >= 5 ? 5 : empl.maturation}`}>
+                <div className={`cellule-content ${getMaturationClass(empl.maturation)}`}>
                   {empl.type}
                 </div>
               </IonCol>
