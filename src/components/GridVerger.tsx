@@ -16,6 +16,7 @@ const GridVerger: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   //const [emplToUpdate, setEmplToUpdate] = useState(null);
   const [selectedEmplacement, setEmplacementToUpdate] = useState<{ row : number, col : number } | null>(null);
+ const arbres = ['Pommier','Cerisier','Abricotier'];
 
   useEffect(() => {
     const loadVerger = async () => {
@@ -42,9 +43,9 @@ const GridVerger: React.FC = () => {
 
   }
 
-  const setPommier = () => {
-    console.log('Pommier planté');
-    verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].type = 'pommier';
+  const setArbre = (arbre:string) => {
+    console.log(arbre +" planté");
+    verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].type = arbre;
     setShowModal(false);
   };
 
@@ -79,9 +80,14 @@ const GridVerger: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonButton expand="block" color="success" onClick={() => setPommier()}>
-            Pommier
-          </IonButton>
+           {arbres.map((arbre) => (
+              <IonButton
+                key={arbre}
+                onClick={() => setArbre(arbre)}
+              >
+                {arbre}
+              </IonButton>
+            ))}
           <IonButton expand="block" color="medium" onClick={() => setShowModal(false)}>
             Annuler
           </IonButton>
