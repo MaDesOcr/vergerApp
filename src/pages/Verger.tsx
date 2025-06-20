@@ -11,9 +11,7 @@ const Verger: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <IonText>
-                    <h1>VERGER</h1>
-                </IonText>
+                
                 <GridVerger></GridVerger>
             </IonContent>
         </IonPage>
