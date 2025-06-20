@@ -2,34 +2,34 @@
   "lignes": [
     {
       "emplacements": [
-        { "type": "case1" },
-        { "type": "case2" },
-        { "type": "case3" },
-        { "type": "case4" }
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 }
       ]
     },
     {
       "emplacements": [
-        { "type": "case5" },
-        { "type": "case6" },
-        { "type": "case7" },
-        { "type": "case8" }
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 }
       ]
     },
     {
       "emplacements": [
-        { "type": "case9" },
-        { "type": "case10" },
-        { "type": "case11" },
-        { "type": "case12" }
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 }
       ]
     },
     {
       "emplacements": [
-        { "type": "case13" },
-        { "type": "case14" },
-        { "type": "case15" },
-        { "type": "case16" }
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 },
+        { "type": "", "maturation": 0 }
       ]
     }
   ]
