@@ -1,0 +1,21 @@
+/* supprime le padding par défaut d’Ionic sur la grid */
+.verger-grid {
+  --ion-grid-padding: 0;
+}
+
+/* transforme chaque cellule en carré, centre le contenu et ajoute une bordure */
+.cellule-content {
+  /* carré : width 100% de la colonne, hauteur = même valeur */
+  aspect-ratio: 1 / 1;
+  width: 100%;
+
+  /* centrage du texte */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* styles visuels */
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  background: #fafafa;
+}
