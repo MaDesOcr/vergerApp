@@ -15,8 +15,8 @@ const GridVerger: React.FC = () => {
   const [verger, setVerger] = useState<VergerData | null>(null);
   const [showModal, setShowModal] = useState(false);
   //const [emplToUpdate, setEmplToUpdate] = useState(null);
-  const [selectedEmplacement, setEmplacementToUpdate] = useState<{ row : number, col : number } | null>(null);
- const arbres = ['Pommier','Cerisier','Abricotier'];
+  const [selectedEmplacement, setEmplacementToUpdate] = useState<{ row: number, col: number } | null>(null);
+  const arbres = ['Pommier', 'Cerisier', 'Abricotier'];
 
   useEffect(() => {
     const loadVerger = async () => {
@@ -43,8 +43,8 @@ const GridVerger: React.FC = () => {
 
   }
 
-  const setArbre = (arbre:string) => {
-    console.log(arbre +" planté");
+  const setArbre = (arbre: string) => {
+    console.log(arbre + " planté");
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].type = arbre;
     setShowModal(false);
   };
@@ -55,12 +55,12 @@ const GridVerger: React.FC = () => {
 
 
   return (
-    <>
+    <><div className="div-verger">
       <IonGrid className="verger-grid">
         {verger.lignes.map((ligne, rowIndex) => (
           <IonRow key={rowIndex}>
             {ligne.emplacements.map((empl, colIndex) => (
-              <IonCol key={colIndex} size={sizeStr} sizeLg='1'
+              <IonCol key={colIndex} size={sizeStr} sizeLg='3'
                 onClick={() => handleClickEmplacement(empl, rowIndex, colIndex)}
               >
                 <div className="cellule-content">
@@ -71,23 +71,24 @@ const GridVerger: React.FC = () => {
           </IonRow>
         ))}
       </IonGrid>
+    </div>
 
-
-      <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+      <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className='modal-ajout-arbre'>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Choisir un arbre</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-           {arbres.map((arbre) => (
-              <IonButton
-                key={arbre}
-                onClick={() => setArbre(arbre)}
-              >
-                {arbre}
-              </IonButton>
-            ))}
+          {arbres.map((arbre) => (
+            <IonButton
+              expand="block"
+              key={arbre}
+              onClick={() => setArbre(arbre)}
+            >
+              {arbre}
+            </IonButton>
+          ))}
           <IonButton expand="block" color="medium" onClick={() => setShowModal(false)}>
             Annuler
           </IonButton>

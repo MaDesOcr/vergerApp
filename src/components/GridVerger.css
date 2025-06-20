@@ -1,11 +1,15 @@
-/* supprime le padding par défaut d’Ionic sur la grid */
+.div-verger {
+  margin: auto;
+  width: 30%;
+  height: 100%;
+}
+
 .verger-grid {
+  margin-top: 100%;
   --ion-grid-padding: 0;
 }
 
-/* transforme chaque cellule en carré, centre le contenu et ajoute une bordure */
 .cellule-content {
-  /* carré : width 100% de la colonne, hauteur = même valeur */
   aspect-ratio: 1 / 1;
   width: 100%;
 
@@ -18,4 +22,10 @@
   border: 1px solid #ccc;
   box-sizing: border-box;
   background: #fafafa;
+}
+
+.modal-ajout-arbre {
+  width: 20%;
+  height: 750px;
+  margin: auto;
 }
