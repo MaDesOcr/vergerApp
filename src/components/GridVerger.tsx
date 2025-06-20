@@ -32,6 +32,18 @@ const GridVerger: React.FC = () => {
     loadVerger();
   }, []);
 
+
+  useEffect(() => {
+  const id = setInterval(() => {
+    console.log('timer');
+  }, 1000);
+
+  return () => {
+    clearInterval(id);
+  };
+}, []);
+
+
   if (!verger) {
     return <p>Chargement…</p>;
   }
