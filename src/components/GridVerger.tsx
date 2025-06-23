@@ -8,27 +8,28 @@ interface VergerData {
     emplacements: {
       maturation: number;
       nbCycles: number;
-      arbre : arbre | undefined;
+      arbre: arbre | undefined;
     }[];
   }[];
 }
 
-interface arbre{
+interface arbre {
   type: string;
   dureeMaturation: number;
   nbCycles: number;
   nbFruitsParCycle: number;
   nomDuFruit: string;
   quantiteFruitRecolte: number;
+  quantiteFruitPourPousser: number
 }
 
 const arbres: arbre[] = [
-  { type: 'Oranger', dureeMaturation: 10, nbCycles: 4, nbFruitsParCycle: 3, nomDuFruit: 'Orange', quantiteFruitRecolte: 1 },
-  { type: 'Citronnier', dureeMaturation: 7, nbCycles: 3, nbFruitsParCycle: 4, nomDuFruit: 'Citron', quantiteFruitRecolte: 2 },
-  { type: 'Pêcher', dureeMaturation: 12, nbCycles: 4, nbFruitsParCycle: 6, nomDuFruit: 'Pêche', quantiteFruitRecolte: 3 },
-  { type: 'Pommier', dureeMaturation: 10, nbCycles: 3, nbFruitsParCycle: 5, nomDuFruit: 'Pomme', quantiteFruitRecolte: 4 },
-  { type: 'Cerisier', dureeMaturation: 15, nbCycles: 2, nbFruitsParCycle: 10, nomDuFruit: 'Cerise', quantiteFruitRecolte: 5 },
-  { type: 'Abricotier', dureeMaturation: 20, nbCycles: 4, nbFruitsParCycle: 8, nomDuFruit: 'Abricot', quantiteFruitRecolte: 6 },
+  { type: 'Oranger', dureeMaturation: 10, nbCycles: 4, nbFruitsParCycle: 3, nomDuFruit: 'Orange', quantiteFruitRecolte: 1, quantiteFruitPourPousser: 2 },
+  { type: 'Citronnier', dureeMaturation: 7, nbCycles: 3, nbFruitsParCycle: 4, nomDuFruit: 'Citron', quantiteFruitRecolte: 2, quantiteFruitPourPousser: 1 },
+  { type: 'Pêcher', dureeMaturation: 12, nbCycles: 4, nbFruitsParCycle: 6, nomDuFruit: 'Pêche', quantiteFruitRecolte: 3, quantiteFruitPourPousser: 3 },
+  { type: 'Pommier', dureeMaturation: 10, nbCycles: 3, nbFruitsParCycle: 5, nomDuFruit: 'Pomme', quantiteFruitRecolte: 4, quantiteFruitPourPousser: 2 },
+  { type: 'Cerisier', dureeMaturation: 15, nbCycles: 2, nbFruitsParCycle: 10, nomDuFruit: 'Cerise', quantiteFruitRecolte: 2, quantiteFruitPourPousser: 4 },
+  { type: 'Abricotier', dureeMaturation: 20, nbCycles: 4, nbFruitsParCycle: 8, nomDuFruit: 'Abricot', quantiteFruitRecolte: 3, quantiteFruitPourPousser: 5 },
 ];
 
 const GridVerger: React.FC = () => {
@@ -57,55 +58,55 @@ const GridVerger: React.FC = () => {
     loadVerger();
   }, []);
 
-useEffect(() => {
-  const id = setInterval(() => {
-    setVerger((prev) => {
-      if (!prev) return prev;
- 
-      const updated = {
-        ...prev,
-        lignes: prev.lignes.map((ligne) => ({
-          ...ligne,
-          emplacements: ligne.emplacements.map((empl) => {
-            if (empl.arbre !== undefined && empl.maturation < 100) {
-              return {
-                ...empl,
-                maturation: empl.maturation + 1,
+  useEffect(() => {
+    const id = setInterval(() => {
+      setVerger((prev) => {
+        if (!prev) return prev;
 
-                ...(empl.maturation >= empl.arbre.dureeMaturation && { maturation: -5 , nbCycles: empl.nbCycles + 1 }), 
-                ...(empl.nbCycles>=empl.arbre.nbCycles && { type: undefined }), 
-              };
-            }
-            return empl;
-          }),
-        })),
-      };
-      console.log("nb de fruits récoltés : " + nbFruitsRecoltes);
-      return updated;
-    });
-  }, 1000); // toutes les secondes
- 
-  return () => clearInterval(id);
-}, []);
- 
+        const updated = {
+          ...prev,
+          lignes: prev.lignes.map((ligne) => ({
+            ...ligne,
+            emplacements: ligne.emplacements.map((empl) => {
+              if (empl.arbre !== undefined && empl.maturation < 100) {
+                return {
+                  ...empl,
+                  maturation: empl.maturation + 1,
+
+                  ...(empl.maturation >= empl.arbre.dureeMaturation && { maturation: -5, nbCycles: empl.nbCycles + 1 }),
+                  ...(empl.nbCycles >= empl.arbre.nbCycles && { type: undefined }),
+                };
+              }
+              return empl;
+            }),
+          })),
+        };
+        console.log("nb de fruits récoltés : " + nbFruitsRecoltes);
+        return updated;
+      });
+    }, 1000); // toutes les secondes
+
+    return () => clearInterval(id);
+  }, []);
+
 
   if (!verger) {
     return <p>Chargement…</p>;
   }
 
-  const handleClickEmplacement = (empl: { arbre: arbre | undefined, maturation : number, nbCycles : number }, rowIndex: number, colIndex: number) => {
+  const handleClickEmplacement = (empl: { arbre: arbre | undefined, maturation: number, nbCycles: number }, rowIndex: number, colIndex: number) => {
     console.log(`Emplacement cliqué : Ligne ${rowIndex}, Colonne ${colIndex}, Type ${empl.arbre}`);
 
-    if( empl.arbre !== undefined) {
-      if(empl.maturation >= empl.arbre.dureeMaturation/2 && empl.maturation < empl.arbre.dureeMaturation){
+    if (empl.arbre !== undefined) {
+      if (empl.maturation >= empl.arbre.dureeMaturation / 2 && empl.maturation < empl.arbre.dureeMaturation) {
         empl.maturation = - 5;
         empl.nbCycles += 1;
         empl.arbre.quantiteFruitRecolte += empl.arbre.nbFruitsParCycle;
-        if(empl.arbre.nbCycles <= empl.nbCycles){
+        if (empl.arbre.nbCycles <= empl.nbCycles) {
           empl.arbre = undefined;
         }
       }
-      else{
+      else {
         setArbreACouper(empl.arbre);
         setShowModalCouper(true);
       }
@@ -115,7 +116,7 @@ useEffect(() => {
     }
 
     setEmplacementToUpdate({ row: rowIndex, col: colIndex });
-   
+
 
   }
 
@@ -125,6 +126,7 @@ useEffect(() => {
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].arbre = arbre;
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].maturation = 0;
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].nbCycles = 0;
+    arbre.quantiteFruitRecolte -= arbre.quantiteFruitPourPousser;
     setShowModal(false);
     setVerger(updatedVerger);
   };
@@ -142,22 +144,22 @@ useEffect(() => {
     }
   }
 
-  const getMaturationClass = (maturation: number, arbre : arbre | undefined) => {
-  if (arbre === undefined) {
-    return 'gris';
-  }
-  switch (true) {
-    case (maturation >= 1 && maturation < arbre.dureeMaturation/2):
-      return 'orange';
-    case (maturation >= arbre.dureeMaturation/2 && maturation < arbre.dureeMaturation):
-      return 'vert';
-    case (maturation >= arbre.dureeMaturation):
-      return 'rouge';
-    default:
+  const getMaturationClass = (maturation: number, arbre: arbre | undefined) => {
+    if (arbre === undefined) {
       return 'gris';
-  }
-};
- 
+    }
+    switch (true) {
+      case (maturation >= 1 && maturation < arbre.dureeMaturation / 2):
+        return 'orange';
+      case (maturation >= arbre.dureeMaturation / 2 && maturation < arbre.dureeMaturation):
+        return 'vert';
+      case (maturation >= arbre.dureeMaturation):
+        return 'rouge';
+      default:
+        return 'gris';
+    }
+  };
+
 
   const cols = verger.lignes[0].emplacements.length;
   const sizeStr = Math.floor(12 / cols).toString();
@@ -165,32 +167,32 @@ useEffect(() => {
 
   return (
     <>
-    <div className="stats-container">
-      {...arbres.map((arbre) => (
-        <div className='fruit-card'>
-          {arbre.nomDuFruit} <br></br>
-          {arbre.quantiteFruitRecolte}</div>
-      ))}
-    </div>
-    
-    <div className="div-verger">
-      <IonGrid className="verger-grid">
-        {verger.lignes.map((ligne, rowIndex) => (
-          <IonRow key={rowIndex}>
-            {ligne.emplacements.map((empl, colIndex) => (
-              <IonCol key={colIndex} size={sizeStr} sizeLg='3'
-                onClick={() => handleClickEmplacement(empl, rowIndex, colIndex)}
-              >
-                <div className={`cellule-content ${getMaturationClass(empl.maturation, empl.arbre)}`}>
-                   {empl.arbre? empl.arbre.type : "vide"}
-
-                </div>
-              </IonCol>
-            ))}
-          </IonRow>
+      <div className="stats-container">
+        {...arbres.map((arbre) => (
+          <div className='fruit-card'>
+            {arbre.nomDuFruit} <br></br>
+            {arbre.quantiteFruitRecolte}</div>
         ))}
-      </IonGrid>
-    </div>
+      </div>
+
+      <div className="div-verger">
+        <IonGrid className="verger-grid">
+          {verger.lignes.map((ligne, rowIndex) => (
+            <IonRow key={rowIndex}>
+              {ligne.emplacements.map((empl, colIndex) => (
+                <IonCol key={colIndex} size={sizeStr} sizeLg='3'
+                  onClick={() => handleClickEmplacement(empl, rowIndex, colIndex)}
+                >
+                  <div className={`cellule-content ${getMaturationClass(empl.maturation, empl.arbre)}`}>
+                    {empl.arbre ? empl.arbre.type : "vide"}
+
+                  </div>
+                </IonCol>
+              ))}
+            </IonRow>
+          ))}
+        </IonGrid>
+      </div>
 
       <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className='modal-ajout-arbre'>
         <IonHeader>
@@ -199,15 +201,19 @@ useEffect(() => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          {arbres.map((arbre) => (
-            <IonButton
+          {arbres.map((arbre) => {
+            const buttonColor = (arbre.quantiteFruitRecolte >= arbre.quantiteFruitPourPousser) ? "success" : "danger";
+
+            return (<IonButton
               expand="block"
               key={arbre.type}
+              color={buttonColor}
+              disabled={arbre.quantiteFruitRecolte < arbre.quantiteFruitPourPousser}
               onClick={() => setArbre(arbre)}
             >
               {arbre.type}
-            </IonButton>
-          ))}
+            </IonButton>);
+          })}
           <IonButton expand="block" color="medium" onClick={() => setShowModal(false)}>
             Annuler
           </IonButton>
@@ -221,12 +227,12 @@ useEffect(() => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-            <IonButton
-              expand="block"
-              onClick={() => couperArbre(arbreACouper)}
-            >
-              Couper
-            </IonButton>
+          <IonButton
+            expand="block"
+            onClick={() => couperArbre(arbreACouper)}
+          >
+            Couper
+          </IonButton>
           <IonButton expand="block" color="medium" onClick={() => setShowModalCouper(false)}>
             Annuler
           </IonButton>
