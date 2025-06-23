@@ -21,6 +21,9 @@ interface arbre{
 }
 
 const arbres: arbre[] = [
+  { type: 'Oranger', dureeMaturation: 2, nbCycles: 1, nbFruitsParCycle: 3 },
+  { type: 'Citronnier', dureeMaturation: 7, nbCycles: 3, nbFruitsParCycle: 4 },
+  { type: 'Pêcher', dureeMaturation: 12, nbCycles: 1, nbFruitsParCycle: 6 },
   { type: 'Pommier', dureeMaturation: 10, nbCycles: 3, nbFruitsParCycle: 5 },
   { type: 'Cerisier', dureeMaturation: 15, nbCycles: 2, nbFruitsParCycle: 10 },
   { type: 'Abricotier', dureeMaturation: 20, nbCycles: 4, nbFruitsParCycle: 8 }
@@ -29,6 +32,10 @@ const arbres: arbre[] = [
 const GridVerger: React.FC = () => {
   const [verger, setVerger] = useState<VergerData | null>(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [showModalCouper, setShowModalCouper] = useState(false);
+  const [arbreACouper, setArbreACouper] = useState<arbre | null>(null);
+
   const [selectedEmplacement, setEmplacementToUpdate] = useState<{ row: number, col: number } | null>(null);
 
   const [nbFruitsRecoltes, setNbFruitsRecoltes] = useState(0);
@@ -64,7 +71,7 @@ useEffect(() => {
                 maturation: empl.maturation + 1,
 
                 ...(empl.maturation >= empl.arbre.dureeMaturation && { maturation: -5 , nbCycles: empl.nbCycles + 1 }), 
-                ...(empl.nbCycles>=empl.arbre.nbCycles && { type: '' }), 
+                ...(empl.nbCycles>=empl.arbre.nbCycles && { type: undefined }), 
               };
             }
             return empl;
@@ -98,6 +105,10 @@ useEffect(() => {
           empl.arbre = undefined;
         }
       }
+      else{
+        setArbreACouper(empl.arbre);
+        setShowModalCouper(true);
+      }
     }
     else {
       setShowModal(true);
@@ -117,6 +128,19 @@ useEffect(() => {
     setShowModal(false);
     setVerger(updatedVerger);
   };
+
+
+  const couperArbre = (arbre: arbre | null) => {
+    if (arbre) {
+      console.log(`Arbre ${arbre.type} coupé`);
+      const updatedVerger = { ...verger };
+      updatedVerger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].arbre = undefined;
+      updatedVerger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].maturation = 0;
+      updatedVerger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].nbCycles = 0;
+      setShowModalCouper(false);
+      setVerger(updatedVerger);
+    }
+  }
 
   const getMaturationClass = (maturation: number, arbre : arbre) => {
   if (arbre === undefined) {
@@ -176,6 +200,25 @@ useEffect(() => {
             </IonButton>
           ))}
           <IonButton expand="block" color="medium" onClick={() => setShowModal(false)}>
+            Annuler
+          </IonButton>
+        </IonContent>
+      </IonModal>
+
+      <IonModal isOpen={showModalCouper} onDidDismiss={() => setShowModalCouper(false)} className='modal-ajout-arbre'>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Couper arbre ?</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+            <IonButton
+              expand="block"
+              onClick={() => couperArbre(arbreACouper)}
+            >
+              Couper
+            </IonButton>
+          <IonButton expand="block" color="medium" onClick={() => setShowModalCouper(false)}>
             Annuler
           </IonButton>
         </IonContent>
