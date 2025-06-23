@@ -81,11 +81,11 @@ const GridVerger: React.FC = () => {
                 return {
                   ...empl,
                   maturation: empl.maturation + 1,
-
+                 
                   ...(empl.maturation >= empl.arbre.dureeMaturation &&
                      { maturation: -5, nbCycles: empl.nbCycles + 1 }),
                   ...(empl.nbCycles >= empl.arbre.nbCycles &&
-                     { type: undefined }),
+                     {arbre: undefined }),
                 };
               }
               return empl;

@@ -1,5 +1,5 @@
 [
-  { "type": "Oranger", "dureeMaturation": 10, "nbCycles": 4, "nbFruitsParCycle": 3, "nomDuFruit": "Orange", "quantiteFruitRecolte": 1, "quantiteFruitPourPousser": 2 },
+  { "type": "Oranger", "dureeMaturation": 10, "nbCycles": 2, "nbFruitsParCycle": 3, "nomDuFruit": "Orange", "quantiteFruitRecolte": 2, "quantiteFruitPourPousser": 2 },
   { "type": "Citronnier", "dureeMaturation": 7, "nbCycles": 3, "nbFruitsParCycle": 4, "nomDuFruit": "Citron", "quantiteFruitRecolte": 2, "quantiteFruitPourPousser": 1 },
   { "type": "Pêcher", "dureeMaturation": 12, "nbCycles": 4, "nbFruitsParCycle": 6, "nomDuFruit": "Pêche", "quantiteFruitRecolte": 3, "quantiteFruitPourPousser": 3 },
   { "type": "Pommier", "dureeMaturation": 10, "nbCycles": 3, "nbFruitsParCycle": 5, "nomDuFruit": "Pomme", "quantiteFruitRecolte": 4, "quantiteFruitPourPousser": 2 },
