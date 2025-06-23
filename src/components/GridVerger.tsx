@@ -7,18 +7,30 @@ import { s } from 'vitest/dist/reporters-5f784f42';
 interface VergerData {
   lignes: {
     emplacements: {
-      type: string;
       maturation: number;
       nbCycles: number;
+      arbre : arbre
     }[];
   }[];
 }
+
+interface arbre{
+  type: string;
+  dureeMaturation: number; // en jours
+  nbCycles: number; // nombre de cycles avant qu'il ne donne plus de fruits
+  nbFruitsParCycle: number; // nombre de fruits produits par cycle
+}
+
+const arbres: arbre[] = [
+  { type: 'Pommier', dureeMaturation: 10, nbCycles: 3, nbFruitsParCycle: 5 },
+  { type: 'Cerisier', dureeMaturation: 15, nbCycles: 2, nbFruitsParCycle: 10 },
+  { type: 'Abricotier', dureeMaturation: 20, nbCycles: 4, nbFruitsParCycle: 8 }
+];
 
 const GridVerger: React.FC = () => {
   const [verger, setVerger] = useState<VergerData | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedEmplacement, setEmplacementToUpdate] = useState<{ row: number, col: number } | null>(null);
-  const arbres = ['Pommier', 'Cerisier', 'Abricotier'];
 
   useEffect(() => {
     const loadVerger = async () => {
@@ -45,13 +57,13 @@ useEffect(() => {
         lignes: prev.lignes.map((ligne) => ({
           ...ligne,
           emplacements: ligne.emplacements.map((empl) => {
-            if (empl.type !== '' && empl.maturation < 100) {
+            if (empl.arbre !== undefined && empl.maturation < 100) {
               return {
                 ...empl,
                 maturation: empl.maturation + 1,
-                // Si la maturation dépasse 15, on la remet à -5
-                ...(empl.maturation >= 20 && { maturation: -5 , nbCycles: empl.nbCycles + 1 }), // Si maturation >= 20, on remet à -5 et on incrémente nbCycles
-                ...(empl.nbCycles>=2 && { type: '' }), // Si nbCycles >= 2, on supprime l'arbre
+
+                ...(empl.maturation >= empl.arbre.dureeMaturation && { maturation: -5 , nbCycles: empl.nbCycles + 1 }), 
+                ...(empl.nbCycles>=empl.arbre.nbCycles && { type: '' }), 
               };
             }
             return empl;
@@ -67,74 +79,38 @@ useEffect(() => {
 }, []);
  
 
-
-/*
-  useEffect(() => {
-    const id = setInterval(() => {
-      console.log('Maturation des arbres');
-      //etape 1
-      //ajout champ maturation: number au emplacement
-      //maturation de tous les arbres présents dans le verger
-      console.log(verger)
-      verger?.lignes.forEach(ligne => {
-        ligne.emplacements.forEach(empl => {
-          if(empl.type!== ""){
-            empl.maturation += 1;
-            console.log(`Maturation de l'arbre ${empl.type} : ${empl.maturation}`);
-          }
-        })
-      })
-      //check de l'état d'avancement la maturation de chaque arbre
-      //mise à jour de la couleur (vert) de l'emplacement lorsque maturation suppérieur à 15
-
-      //etape 2
-      //entre zero et 10, le fruit pousse -> jaune
-      //tant que la maturation est inférieur à 10, le fruit n'est pas mûr, on ne peut pas récolter -> orange
-      //si la maturation est bonne (entre 10 et 15), on peut recolter -> vert
-      //si la maturation est trop haute (supérieur à 15), on la remet à -5 -> gris
-
-      //etape 3
-      //au bout de 5 cycles, l'arbre est mort, on le supprime du verger
-
-    }, 1000);
-
-    return () => {
-      clearInterval(id);
-    };
-  }, []);
-*/
-
   if (!verger) {
     return <p>Chargement…</p>;
   }
 
-  const handleClickEmplacement = (empl: { type: string }, rowIndex: number, colIndex: number) => {
-    console.log(`Emplacement cliqué : Ligne ${rowIndex}, Colonne ${colIndex}, Type ${empl.type}`);
+  const handleClickEmplacement = (empl: { arbre: arbre }, rowIndex: number, colIndex: number) => {
+    console.log(`Emplacement cliqué : Ligne ${rowIndex}, Colonne ${colIndex}, Type ${empl.arbre}`);
     setEmplacementToUpdate({ row: rowIndex, col: colIndex });
     setShowModal(true);
 
   }
 
-  const setArbre = (arbre: string) => {
+  const setArbre = (arbre: arbre) => {
     console.log(arbre + " planté");
     const updatedVerger = { ...verger };
-    verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].type = arbre;
+    verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].arbre = arbre;
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].maturation = 0;
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].nbCycles = 0;
     setShowModal(false);
     setVerger(updatedVerger);
   };
 
-  const getMaturationClass = (maturation: number) => {
+  const getMaturationClass = (maturation: number, arbre : arbre) => {
+  if (arbre === undefined) {
+    return 'gris';
+  }
   switch (true) {
-    case (maturation >= 1 && maturation < 10):
+    case (maturation >= 1 && maturation < arbre.dureeMaturation/2):
       return 'orange';
-    case (maturation >= 10 && maturation < 15):
+    case (maturation >= arbre.dureeMaturation/2 && maturation < arbre.dureeMaturation):
       return 'vert';
-    case (maturation >= 15):
+    case (maturation >= arbre.dureeMaturation/2):
       return 'rouge';
-    default:
-      return 'gris';
   }
 };
  
@@ -152,8 +128,9 @@ useEffect(() => {
               <IonCol key={colIndex} size={sizeStr} sizeLg='3'
                 onClick={() => handleClickEmplacement(empl, rowIndex, colIndex)}
               >
-                <div className={`cellule-content ${getMaturationClass(empl.maturation)}`}>
-                  {empl.type}
+                <div className={`cellule-content ${getMaturationClass(empl.maturation, empl.arbre)}`}>
+                   {empl.arbre? empl.arbre.type : "vide"}
+
                 </div>
               </IonCol>
             ))}
@@ -172,10 +149,10 @@ useEffect(() => {
           {arbres.map((arbre) => (
             <IonButton
               expand="block"
-              key={arbre}
+              key={arbre.type}
               onClick={() => setArbre(arbre)}
             >
-              {arbre}
+              {arbre.type}
             </IonButton>
           ))}
           <IonButton expand="block" color="medium" onClick={() => setShowModal(false)}>
