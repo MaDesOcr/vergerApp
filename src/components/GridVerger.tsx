@@ -9,6 +9,7 @@ interface VergerData {
     emplacements: {
       type: string;
       maturation: number;
+      nbCycles: number;
     }[];
   }[];
 }
@@ -16,7 +17,6 @@ interface VergerData {
 const GridVerger: React.FC = () => {
   const [verger, setVerger] = useState<VergerData | null>(null);
   const [showModal, setShowModal] = useState(false);
-  //const [emplToUpdate, setEmplToUpdate] = useState(null);
   const [selectedEmplacement, setEmplacementToUpdate] = useState<{ row: number, col: number } | null>(null);
   const arbres = ['Pommier', 'Cerisier', 'Abricotier'];
 
@@ -49,8 +49,9 @@ useEffect(() => {
               return {
                 ...empl,
                 maturation: empl.maturation + 1,
-                // Si la maturation dépasse 15, on la remet à 0
-                ...(empl.maturation >= 20 && { maturation: -5 }),
+                // Si la maturation dépasse 15, on la remet à -5
+                ...(empl.maturation >= 20 && { maturation: -5 , nbCycles: empl.nbCycles + 1 }), // Si maturation >= 20, on remet à -5 et on incrémente nbCycles
+                ...(empl.nbCycles>=2 && { type: '' }), // Si nbCycles >= 2, on supprime l'arbre
               };
             }
             return empl;
@@ -119,6 +120,7 @@ useEffect(() => {
     const updatedVerger = { ...verger };
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].type = arbre;
     verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].maturation = 0;
+    verger.lignes[selectedEmplacement!.row].emplacements[selectedEmplacement!.col].nbCycles = 0;
     setShowModal(false);
     setVerger(updatedVerger);
   };
