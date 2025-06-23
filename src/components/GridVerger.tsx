@@ -2,23 +2,22 @@
 import { IonGrid, IonRow, IonCol, IonModal, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/react';
 import './GridVerger.css';
 import React, { useEffect, useState } from 'react';
-import { s } from 'vitest/dist/reporters-5f784f42';
 
 interface VergerData {
   lignes: {
     emplacements: {
       maturation: number;
       nbCycles: number;
-      arbre : arbre
+      arbre : arbre | undefined;
     }[];
   }[];
 }
 
 interface arbre{
   type: string;
-  dureeMaturation: number; // en jours
-  nbCycles: number; // nombre de cycles avant qu'il ne donne plus de fruits
-  nbFruitsParCycle: number; // nombre de fruits produits par cycle
+  dureeMaturation: number;
+  nbCycles: number;
+  nbFruitsParCycle: number;
 }
 
 const arbres: arbre[] = [
@@ -31,6 +30,8 @@ const GridVerger: React.FC = () => {
   const [verger, setVerger] = useState<VergerData | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedEmplacement, setEmplacementToUpdate] = useState<{ row: number, col: number } | null>(null);
+
+  const [nbFruitsRecoltes, setNbFruitsRecoltes] = useState(0);
 
   useEffect(() => {
     const loadVerger = async () => {
@@ -70,7 +71,7 @@ useEffect(() => {
           }),
         })),
       };
- 
+      console.log("nb de fruits récoltés : " + nbFruitsRecoltes);
       return updated;
     });
   }, 1000); // toutes les secondes
@@ -83,10 +84,27 @@ useEffect(() => {
     return <p>Chargement…</p>;
   }
 
-  const handleClickEmplacement = (empl: { arbre: arbre }, rowIndex: number, colIndex: number) => {
+  const handleClickEmplacement = (empl: { arbre: arbre, maturation : number, nbCycles : number }, rowIndex: number, colIndex: number) => {
     console.log(`Emplacement cliqué : Ligne ${rowIndex}, Colonne ${colIndex}, Type ${empl.arbre}`);
+
+    if( empl.arbre !== undefined) {
+      if(empl.maturation >= empl.arbre.dureeMaturation/2 && empl.maturation < empl.arbre.dureeMaturation){
+        console.log('Recolte de l\'arbre ${empl.arbre.type}');
+        setNbFruitsRecoltes(nbFruitsRecoltes + empl.arbre.nbFruitsParCycle);
+        console.log("nb de fruits récoltés : " + nbFruitsRecoltes);
+        empl.maturation = - 5;
+        empl.nbCycles += 1;
+        if(empl.arbre.nbCycles <= empl.nbCycles){
+          empl.arbre = undefined;
+        }
+      }
+    }
+    else {
+      setShowModal(true);
+    }
+
     setEmplacementToUpdate({ row: rowIndex, col: colIndex });
-    setShowModal(true);
+   
 
   }
 
@@ -109,8 +127,10 @@ useEffect(() => {
       return 'orange';
     case (maturation >= arbre.dureeMaturation/2 && maturation < arbre.dureeMaturation):
       return 'vert';
-    case (maturation >= arbre.dureeMaturation/2):
+    case (maturation >= arbre.dureeMaturation):
       return 'rouge';
+    default:
+      return 'gris';
   }
 };
  
