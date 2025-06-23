@@ -23,16 +23,11 @@ interface arbre {
   quantiteFruitPourPousser: number
 }
 
-const arbres: arbre[] = [
-  { type: 'Oranger', dureeMaturation: 10, nbCycles: 4, nbFruitsParCycle: 3, nomDuFruit: 'Orange', quantiteFruitRecolte: 1, quantiteFruitPourPousser: 2 },
-  { type: 'Citronnier', dureeMaturation: 7, nbCycles: 3, nbFruitsParCycle: 4, nomDuFruit: 'Citron', quantiteFruitRecolte: 2, quantiteFruitPourPousser: 1 },
-  { type: 'Pêcher', dureeMaturation: 12, nbCycles: 4, nbFruitsParCycle: 6, nomDuFruit: 'Pêche', quantiteFruitRecolte: 3, quantiteFruitPourPousser: 3 },
-  { type: 'Pommier', dureeMaturation: 10, nbCycles: 3, nbFruitsParCycle: 5, nomDuFruit: 'Pomme', quantiteFruitRecolte: 4, quantiteFruitPourPousser: 2 },
-  { type: 'Cerisier', dureeMaturation: 15, nbCycles: 2, nbFruitsParCycle: 10, nomDuFruit: 'Cerise', quantiteFruitRecolte: 2, quantiteFruitPourPousser: 4 },
-  { type: 'Abricotier', dureeMaturation: 20, nbCycles: 4, nbFruitsParCycle: 8, nomDuFruit: 'Abricot', quantiteFruitRecolte: 3, quantiteFruitPourPousser: 5 },
-];
+
 
 const GridVerger: React.FC = () => {
+  const [arbres, setArbres] = useState<arbre[] | null>(null);
+
   const [verger, setVerger] = useState<VergerData | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -59,6 +54,20 @@ const GridVerger: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const loadArbres = async () => {
+      try {
+        const res = await fetch('/data/arbres.json');
+        if (!res.ok) throw new Error(`Erreur HTTP : ${res.status}`);
+        const data: arbre[] = await res.json();
+        setArbres(data);
+      } catch (err) {
+        console.error('Erreur de chargement des arbres :', err);
+      }
+    };
+    loadArbres();
+  }, []);
+
+  useEffect(() => {
     const id = setInterval(() => {
       setVerger((prev) => {
         if (!prev) return prev;
@@ -73,8 +82,10 @@ const GridVerger: React.FC = () => {
                   ...empl,
                   maturation: empl.maturation + 1,
 
-                  ...(empl.maturation >= empl.arbre.dureeMaturation && { maturation: -5, nbCycles: empl.nbCycles + 1 }),
-                  ...(empl.nbCycles >= empl.arbre.nbCycles && { type: undefined }),
+                  ...(empl.maturation >= empl.arbre.dureeMaturation &&
+                     { maturation: -5, nbCycles: empl.nbCycles + 1 }),
+                  ...(empl.nbCycles >= empl.arbre.nbCycles &&
+                     { type: undefined }),
                 };
               }
               return empl;
