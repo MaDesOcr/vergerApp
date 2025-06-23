@@ -18,15 +18,17 @@ interface arbre{
   dureeMaturation: number;
   nbCycles: number;
   nbFruitsParCycle: number;
+  nomDuFruit: string;
+  quantiteFruitRecolte: number;
 }
 
 const arbres: arbre[] = [
-  { type: 'Oranger', dureeMaturation: 2, nbCycles: 1, nbFruitsParCycle: 3 },
-  { type: 'Citronnier', dureeMaturation: 7, nbCycles: 3, nbFruitsParCycle: 4 },
-  { type: 'Pêcher', dureeMaturation: 12, nbCycles: 1, nbFruitsParCycle: 6 },
-  { type: 'Pommier', dureeMaturation: 10, nbCycles: 3, nbFruitsParCycle: 5 },
-  { type: 'Cerisier', dureeMaturation: 15, nbCycles: 2, nbFruitsParCycle: 10 },
-  { type: 'Abricotier', dureeMaturation: 20, nbCycles: 4, nbFruitsParCycle: 8 }
+  { type: 'Oranger', dureeMaturation: 10, nbCycles: 4, nbFruitsParCycle: 3, nomDuFruit: 'Orange', quantiteFruitRecolte: 1 },
+  { type: 'Citronnier', dureeMaturation: 7, nbCycles: 3, nbFruitsParCycle: 4, nomDuFruit: 'Citron', quantiteFruitRecolte: 2 },
+  { type: 'Pêcher', dureeMaturation: 12, nbCycles: 4, nbFruitsParCycle: 6, nomDuFruit: 'Pêche', quantiteFruitRecolte: 3 },
+  { type: 'Pommier', dureeMaturation: 10, nbCycles: 3, nbFruitsParCycle: 5, nomDuFruit: 'Pomme', quantiteFruitRecolte: 4 },
+  { type: 'Cerisier', dureeMaturation: 15, nbCycles: 2, nbFruitsParCycle: 10, nomDuFruit: 'Cerise', quantiteFruitRecolte: 5 },
+  { type: 'Abricotier', dureeMaturation: 20, nbCycles: 4, nbFruitsParCycle: 8, nomDuFruit: 'Abricot', quantiteFruitRecolte: 6 },
 ];
 
 const GridVerger: React.FC = () => {
@@ -91,16 +93,14 @@ useEffect(() => {
     return <p>Chargement…</p>;
   }
 
-  const handleClickEmplacement = (empl: { arbre: arbre, maturation : number, nbCycles : number }, rowIndex: number, colIndex: number) => {
+  const handleClickEmplacement = (empl: { arbre: arbre | undefined, maturation : number, nbCycles : number }, rowIndex: number, colIndex: number) => {
     console.log(`Emplacement cliqué : Ligne ${rowIndex}, Colonne ${colIndex}, Type ${empl.arbre}`);
 
     if( empl.arbre !== undefined) {
       if(empl.maturation >= empl.arbre.dureeMaturation/2 && empl.maturation < empl.arbre.dureeMaturation){
-        console.log('Recolte de l\'arbre ${empl.arbre.type}');
-        setNbFruitsRecoltes(nbFruitsRecoltes + empl.arbre.nbFruitsParCycle);
-        console.log("nb de fruits récoltés : " + nbFruitsRecoltes);
         empl.maturation = - 5;
         empl.nbCycles += 1;
+        empl.arbre.quantiteFruitRecolte += empl.arbre.nbFruitsParCycle;
         if(empl.arbre.nbCycles <= empl.nbCycles){
           empl.arbre = undefined;
         }
@@ -142,7 +142,7 @@ useEffect(() => {
     }
   }
 
-  const getMaturationClass = (maturation: number, arbre : arbre) => {
+  const getMaturationClass = (maturation: number, arbre : arbre | undefined) => {
   if (arbre === undefined) {
     return 'gris';
   }
@@ -164,7 +164,16 @@ useEffect(() => {
 
 
   return (
-    <><div className="div-verger">
+    <>
+    <div className="stats-container">
+      {...arbres.map((arbre) => (
+        <div className='fruit-card'>
+          {arbre.nomDuFruit} <br></br>
+          {arbre.quantiteFruitRecolte}</div>
+      ))}
+    </div>
+    
+    <div className="div-verger">
       <IonGrid className="verger-grid">
         {verger.lignes.map((ligne, rowIndex) => (
           <IonRow key={rowIndex}>

@@ -45,3 +45,25 @@
   height: 750px;
   margin: auto;
 }
+
+
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 20px auto;
+  max-width: 800px;
+}
+.fruit-card {
+  background-color: #f8f9fa;
+  border: 2px solid #d3d3d3;
+  border-radius: 12px;
+  padding: 15px 25px;
+  margin: 10px;
+  width: 180px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Arial';
+  text-align : center;
+}
+ 
