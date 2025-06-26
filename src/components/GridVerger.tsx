@@ -30,6 +30,7 @@ const GridVerger: React.FC = () => {
 
   const [verger, setVerger] = useState<VergerData | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showModalLancement, setShowModalLancement] = useState(true);
 
   const [showModalCouper, setShowModalCouper] = useState(false);
   const [arbreACouper, setArbreACouper] = useState<arbre | null>(null);
@@ -41,7 +42,7 @@ const GridVerger: React.FC = () => {
   useEffect(() => {
     const loadVerger = async () => {
       try {
-        const res = await fetch('/data/verger.json');
+        const res = await fetch('../data/verger.json');
         if (!res.ok) throw new Error(`Erreur HTTP : ${res.status}`);
         const data: VergerData = await res.json();
         setVerger(data);
@@ -56,7 +57,7 @@ const GridVerger: React.FC = () => {
   useEffect(() => {
     const loadArbres = async () => {
       try {
-        const res = await fetch('/data/arbres.json');
+        const res = await fetch('./data/arbres.json');
         if (!res.ok) throw new Error(`Erreur HTTP : ${res.status}`);
         const data: arbre[] = await res.json();
         setArbres(data);
@@ -172,6 +173,12 @@ const GridVerger: React.FC = () => {
   };
 
 
+  const lancerJeu = () => {
+    setShowModalLancement(false);
+    console.log("Jeu lancé");
+  };
+
+
   const cols = verger.lignes[0].emplacements.length;
   const sizeStr = Math.floor(12 / cols).toString();
 
@@ -249,6 +256,19 @@ const GridVerger: React.FC = () => {
           </IonButton>
         </IonContent>
       </IonModal>
+
+
+      <IonModal isOpen={showModalLancement}>
+        <IonContent className="ion-padding">
+          <IonButton
+            expand="block"
+            onClick={() => lancerJeu()}
+          >
+            Lancer
+          </IonButton>
+        </IonContent>
+      </IonModal>
+
     </>
   );
 };
