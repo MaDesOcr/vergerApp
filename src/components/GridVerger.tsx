@@ -39,6 +39,9 @@ const GridVerger: React.FC = () => {
 
   const [nbFruitsRecoltes, setNbFruitsRecoltes] = useState(0);
 
+  const [minuteur, setMinuteur] = useState<number>(0);
+  const [nbPoints, setNbPoints] = useState<number>(0);
+
   useEffect(() => {
     const loadVerger = async () => {
       try {
@@ -70,6 +73,8 @@ const GridVerger: React.FC = () => {
 
   useEffect(() => {
     const id = setInterval(() => {
+      setMinuteur(minuteur=> minuteur > 0 ? minuteur - 1 : 0);
+
       setVerger((prev) => {
         if (!prev) return prev;
 
@@ -82,11 +87,11 @@ const GridVerger: React.FC = () => {
                 return {
                   ...empl,
                   maturation: empl.maturation + 1,
-                 
+
                   ...(empl.maturation >= empl.arbre.dureeMaturation &&
-                     { maturation: -5, nbCycles: empl.nbCycles + 1 }),
+                    { maturation: -5, nbCycles: empl.nbCycles + 1 }),
                   ...(empl.nbCycles >= empl.arbre.nbCycles &&
-                     {arbre: undefined }),
+                    { arbre: undefined }),
                 };
               }
               return empl;
@@ -175,6 +180,7 @@ const GridVerger: React.FC = () => {
 
   const lancerJeu = () => {
     setShowModalLancement(false);
+    setMinuteur(60);
     console.log("Jeu lancé");
   };
 
@@ -185,12 +191,25 @@ const GridVerger: React.FC = () => {
 
   return (
     <>
-      <div className="stats-container">
-        {...arbres.map((arbre) => (
-          <div className='fruit-card'>
-            {arbre.nomDuFruit} <br></br>
-            {arbre.quantiteFruitRecolte}</div>
-        ))}
+      <div className="infos-content">
+        <div className="stats-item">
+          <h3>Minuteur</h3>
+          <p>{minuteur}</p>
+        </div>
+
+        <div className="stats-container">
+          {...arbres.map((arbre) => (
+            <div className='fruit-card'>
+              {arbre.nomDuFruit} <br></br>
+              {arbre.quantiteFruitRecolte}</div>
+          ))}
+
+        </div>
+
+        <div className="stats-item">
+          <h3>Points</h3>
+          <p>{nbPoints}</p>
+        </div>
       </div>
 
       <div className="div-verger">
@@ -258,7 +277,7 @@ const GridVerger: React.FC = () => {
       </IonModal>
 
 
-      <IonModal isOpen={showModalLancement}>
+      <IonModal isOpen={showModalLancement} backdropDismiss={false}>
         <IonContent className="ion-padding">
           <IonButton
             expand="block"

@@ -46,6 +46,11 @@
   margin: auto;
 }
 
+.infos-content{
+  display: flex;
+  padding: 20px;
+  align-items: center;
+}
 
 .stats-container {
   display: flex;
